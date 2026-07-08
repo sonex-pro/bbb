@@ -1,0 +1,720 @@
+/*==================================================
+INTERMEDIATE LESSON PAGE STYLES
+==================================================*/
+
+/*==================================================
+1. VARIABLES & RESET
+==================================================*/
+:root {
+    --primary: #2196F3;
+    --primary-dark: #1976D2;
+    --secondary: #4CAF50;
+    --dark: #212121;
+    --light: #f5f5f5;
+    --gray: #757575;
+    --white: #ffffff;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+    
+    /* Brand colors */
+    --brand-blue: #0e43ca;
+    --brand-light-blue: #e6f0ff;
+    --brand-dark: #181818;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: var(--dark);
+    background-color: var(--white);
+}
+
+/*==================================================
+2. TYPOGRAPHY & BASE STYLES
+==================================================*/
+h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+p {
+    margin-bottom: 1rem;
+    color: var(--gray);
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/*==================================================
+3. BUTTONS & INTERACTIVE ELEMENTS
+==================================================*/
+.btn {
+    display: inline-block;
+    padding: 8px 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--brand-dark);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.2;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background-color: var(--brand-dark);
+    color: #fff;
+}
+
+.btn-primary:hover, 
+.btn-primary:focus {
+    background-color: #222;
+}
+
+.btn.disabled, 
+.btn[aria-disabled="true"] {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+    background-color: var(--brand-dark);
+    color: #fff;
+}
+
+/*==================================================
+4. HEADER & NAVIGATION
+==================================================*/
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    padding: 0.75rem 0;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 1.5rem;
+}
+
+/* Logo styling */
+.logo {
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 65px;
+    width: auto;
+    display: block;
+    transition: opacity 0.3s ease;
+}
+
+.logo-img:hover {
+    opacity: 0.9;
+}
+
+/* Navigation */
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: var(--dark);
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--primary);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after,
+.nav-link:focus::after {
+    width: 100%;
+}
+
+.nav-link:hover,
+.nav-link:focus {
+    color: var(--primary);
+}
+
+/* Mobile menu toggle button */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1002;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px 0;
+    background-color: var(--dark);
+    transition: all 0.3s ease;
+}
+
+/* Open menu toggle styling (X shape) */
+.menu-toggle.active span:nth-child(1) {
+    transform: rotate(45deg) translate(5px, 5px);
+}
+
+.menu-toggle.active span:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -7px);
+}
+
+/*==================================================
+5. LESSON DETAIL PAGE
+==================================================*/
+.lesson-detail {
+    padding-top: 100px;
+    padding-bottom: 4rem;
+    background-color: var(--white);
+}
+
+.lesson-detail h1 {
+    color: #0e43ca;
+    margin-bottom: 1.5rem;
+    padding-top: 10px;
+}
+
+.booking-options {
+    margin-top: 2rem;
+}
+
+.booking-options h2 {
+    color: #000;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.booking-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.25rem;
+    margin-top: 1rem;
+}
+
+.booking-card {
+    background-color: #e6f0ff;
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    height: auto;
+}
+
+.booking-card h3 {
+    color: #0e43ca;
+    margin-bottom: 0.4rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.booking-card p {
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+    color: #181818;
+    font-weight: 400;
+}
+
+.booking-card .price {
+    font-weight: 400;
+    color: #181818;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.booking-card .btn {
+    display: inline-block;
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.note {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-left: 4px solid #0e43ca;
+    font-style: italic;
+    max-width: 800px;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.month-select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    background-color: #fff;
+}
+
+.month-select:disabled {
+    background-color: #f5f5f5;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.form-group.disabled label {
+    color: #999;
+}
+
+/* Calendar styles */
+.calendar-container {
+    margin-top: 1rem;
+}
+
+#show-calendar-btn {
+    padding: 8px 2rem;
+    background-color: #fff;
+    color: #000;
+    border: 1px solid #ddd;
+    position: relative;
+    text-align: left;
+}
+
+#show-calendar-btn::after {
+    content: '\25BC';
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    pointer-events: none;
+}
+
+.calendar-wrapper {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.calendar-wrapper.hidden {
+    display: none;
+}
+
+/* Custom Calendar */
+.custom-calendar {
+    width: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f5f5f5;
+    border-radius: 4px 4px 0 0;
+}
+
+.calendar-header button {
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.current-month {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    grid-gap: 5px;
+    padding: 10px;
+}
+
+.days div {
+    text-align: center;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.days div.disabled {
+    color: #ccc;
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.days div.available {
+    font-weight: bold;
+    color: #000;
+}
+
+.days div.available:hover {
+    background-color: #f0f0f0;
+}
+
+.days div.selected {
+    background-color: #181818;
+    color: white;
+}
+
+.selected-date-display {
+    margin-top: 10px;
+    padding: 10px;
+    text-align: center;
+    font-weight: bold;
+    border-top: 1px solid #eee;
+}
+
+.next-button-container {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.next-button {
+    padding: 3px 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #181818;
+    color: #fff;
+}
+
+.next-button:hover {
+    background-color: #222;
+}
+
+/*==================================================
+6. FOOTER
+==================================================*/
+.footer {
+    background-color: #181818;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.footer p, .footer a {
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.footer a {
+    text-decoration: underline;
+    transition: color 0.2s;
+}
+
+.footer a:hover {
+    color: #2196F3;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+/*==================================================
+7. RESPONSIVE STYLES (Honor Device Breakpoints)
+==================================================*/
+
+/* Honor Phone Portrait */
+@media (max-width: 367px) {
+    .logo-img {
+        height: 50px;
+        width: auto;
+    }
+    
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 85%;
+        max-width: 280px;
+        height: 100vh;
+        background-color: #ffffff;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 4rem 1.5rem 2rem;
+        overflow-y: auto;
+    }
+    
+    .nav.active {
+        right: 0;
+    }
+    
+    .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .nav-item {
+        width: 100%;
+    }
+    
+    .nav-link {
+        display: block;
+        padding: 0.5rem 0;
+        font-size: 1rem;
+    }
+    
+    .booking-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer {
+        padding: 0.75rem 0;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 0.4rem;
+        font-size: 0.9rem;
+    }
+    
+    .footer p {
+        font-size: 0.85rem;
+    }
+}
+
+/* Honor Phone Landscape */
+@media (max-width: 814px) and (min-width: 368px) {
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background-color: #ffffff;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 5rem 2rem 2rem;
+        overflow-y: auto;
+    }
+    
+    .nav.active {
+        right: 0;
+    }
+    
+    .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .nav-item {
+        width: 100%;
+    }
+    
+    .nav-link {
+        display: block;
+        padding: 0.75rem 0;
+        font-size: 1.1rem;
+    }
+    
+    .booking-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer-links {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .footer {
+        padding: 1rem 0;
+    }
+}
+
+/* Honor Tablet Portrait */
+@media (max-width: 686px) and (min-width: 368px) {
+    .logo-img {
+        height: 55px;
+        width: auto;
+    }
+    
+    .booking-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .footer {
+        padding: 1.5rem 0;
+    }
+}
+
+/* Honor Tablet Landscape */
+@media (max-width: 1143px) and (min-width: 687px) {
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 75%;
+        max-width: 350px;
+        height: 100vh;
+        background-color: #ffffff;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 5rem 2rem 2rem;
+        overflow-y: auto;
+    }
+    
+    .nav.active {
+        right: 0;
+    }
+    
+    .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .nav-item {
+        width: 100%;
+    }
+    
+    .nav-link {
+        display: block;
+        padding: 0.75rem 0;
+        font-size: 1.1rem;
+    }
+    
+    .footer {
+        padding: 2rem 0;
+    }
+}
+
+/* MacBook and Larger Devices */
+@media (min-width: 1144px) {
+    .footer {
+        padding: 3rem 0;
+    }
+}

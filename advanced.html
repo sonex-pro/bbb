@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced | Batt's Booking Buddy</title>
+    <link rel="stylesheet" href="css/advanced.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- Apple Touch Icon (iOS home screen) -->
+    <link rel="apple-touch-icon" href="images/webclip.png">
+    <!-- Web App Manifest -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Batt's Booking">
+    <meta name="theme-color" content="#0e43ca">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html#home">
+                    <img src="images/logo.webp" alt="Batt's Booking Buddy Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    <main>
+        <section class="lesson-detail">
+            <div class="container">
+                <h1>Book Advanced Squad Group Sessions</h1>
+                <div class="booking-options">
+                    <h2>Booking Options</h2>
+                    <div class="booking-cards">
+                        <div class="booking-card">
+                            <h3>Book sessions for the whole month<br>(2 or 3 sessions per week)</h3>
+                            <p class="price">Will cost £68.00 per month (best option).</p>
+                            <div class="form-group">
+                                <label for="month-select-3-sessions">Select month:</label>
+                                <select id="month-select-3-sessions" class="month-select" data-price="55.00" data-plan="3 sessions per week">
+                                    <option value="">Choose a month</option>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-card">
+                            <h3>Book sessions for the whole month<br>(1 session per week)</h3>
+                            <p class="price">Will cost £44.00 per month.</p>
+                            <div class="form-group">
+                                <label for="month-select-1-session">Select month:</label>
+                                <select id="month-select-1-session" class="month-select" data-price="45.00" data-plan="1 session per week">
+                                    <option value="">Choose a month</option>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-card">
+                            <h3>Book single sessions</h3>
+                            <p class="price">Will cost £13.00 each.</p>
+                            <p>Only Mondays, Wednesdays, and Fridays are available.</p>
+                            <div class="calendar-container">
+                                <button id="show-calendar-btn" class="btn btn-primary" data-price="15.00" data-plan="Single sessions">Show calendar to book</button>
+                                <div id="calendar-wrapper" class="calendar-wrapper hidden">
+                                    <div class="custom-calendar">
+                                        <div class="calendar-header">
+                                            <button type="button" class="prev-month">&#10094;</button>
+                                            <div class="current-month"></div>
+                                            <button type="button" class="next-month">&#10095;</button>
+                                        </div>
+                                        <div class="weekdays">
+                                            <div>Sun</div>
+                                            <div>Mon</div>
+                                            <div>Tue</div>
+                                            <div>Wed</div>
+                                            <div>Thu</div>
+                                            <div>Fri</div>
+                                            <div>Sat</div>
+                                        </div>
+                                        <div class="days"></div>
+                                        <div class="selected-date-display"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="note">
+                        <p>Note: If you are booking for a sibling, add the code: SIB before checkout to receive 50% discount.</p>
+                    </div>
+                    
+                    <div class="next-button-container">
+                        <a href="your-details.html" class="btn btn-primary next-button disabled" id="next-button" aria-disabled="true">Next</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+    <div class="container">
+        <div class="footer-links">
+            <p>Quick Links:</p>
+            <a href="https://www.battsharlow.com/" target="_blank">Batts Table Tennis Club</a>
+            <a href="https://stripe.com/gb/resources/more/secure-payment-systems-explained" target="_blank">Stripe Secure Payments</a>
+            <a href="mailto:cbj.uk.design@gmail.com">cbj-uk-design</a>
+        </div>
+        <p>&copy; 2026 Carl Johnson Designs. All rights reserved.</p>
+    </div>
+</footer>
+</body>
+</html>
