@@ -8,15 +8,15 @@
   "theme_color": "#0e43ca",
   "icons": [
     {
-      "src": "images/icon-192.png",
+      "src": "images/favicon-images/android-chrome-192x192.webp",
       "sizes": "192x192",
-      "type": "image/png",
+      "type": "image/webp",
       "purpose": "any maskable"
     },
     {
-      "src": "images/icon-512.png",
+      "src": "images/favicon-images/android-chrome-512x512.webp",
       "sizes": "512x512",
-      "type": "image/png",
+      "type": "image/webp",
       "purpose": "any maskable"
     }
   ]
