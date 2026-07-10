@@ -26,7 +26,7 @@
     endpoint: "https://fra.cloud.appwrite.io/v1",
     projectId: "6a49238a000491abb4d9",
     databaseId: "6a4923ce0020d9a64cd6",
-    collectionId: "table-members",
+    collectionId: "members",
     memberIdField: "id_from_bbb",
   };
 
