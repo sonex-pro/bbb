@@ -4,17 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beginner | Batt's Booking Buddy</title>
-    <link rel="stylesheet" href="css/beginner.css">
-    <!-- Favicon -->
-    <link rel="icon" type="image/webp" href="images/favicon-images/favicon-32x32.webp" sizes="32x32">
-    <link rel="icon" type="image/webp" href="images/favicon-images/favicon-16x16.webp" sizes="16x16">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
     <!-- Apple Touch Icon (iOS home screen) -->
-    <link rel="apple-touch-icon" href="images/favicon-images/apple-touch-icon.webp">
-    <!-- Android Chrome Icons -->
-    <link rel="icon" type="image/webp" href="images/favicon-images/android-chrome-192x192.webp" sizes="192x192">
-    <link rel="icon" type="image/webp" href="images/favicon-images/android-chrome-512x512.webp" sizes="512x512">
+    <link rel="apple-touch-icon" href="images/webclip.png">
     <!-- Web App Manifest -->
-    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Batt's Booking">
     <meta name="theme-color" content="#0e43ca">
@@ -29,14 +24,14 @@
         <div class="container">
             <div class="logo">
                 <a href="index.html#home">
-                    <img src="images/favicon-images/bbbbbbbbb.webp" alt="Batt's Booking Buddy Logo" class="logo-img">
+                    <img src="images/logo.webp" alt="Batt's Booking Buddy Logo" class="logo-img">
                 </a>
             </div>
             <nav class="nav">
                 <ul class="nav-list">
                     <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
                     
-                    <li class="nav-item"><a href="contact.html" class="nav-link">Contact</a></li>
+                    <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
                 </ul>
             </nav>
             <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
@@ -57,14 +52,11 @@
                             <h3>Book sessions for the whole month<br>(2 or 3 sessions per week)</h3>
                             <p class="price">Will cost £45.00 per month (best option).</p>
                             <div class="form-group">
-                                <button type="button"
-                                        id="month-select-3-sessions"
-                                        class="btn btn-primary"
-                                        data-price="30.00"
-                                        data-plan="3 sessions per week"
-                                        onclick="this.dispatchEvent(new Event('change', { bubbles: true }))">
-                                    Choose 2/3 sessions per week
-                                </button>
+                                <label for="month-select-3-sessions">Select month:</label>
+                                <select id="month-select-3-sessions" class="month-select" data-price="30.00" data-plan="3 sessions per week">
+                                    <option value="">Choose a month</option>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
                             </div>
                         </div>
                         
@@ -72,14 +64,11 @@
                             <h3>Book sessions for the whole month<br>(1 session per week)</h3>
                             <p class="price">Will cost £30.00 per month.</p>
                             <div class="form-group">
-                                <button type="button"
-                                        id="month-select-1-session"
-                                        class="btn btn-primary"
-                                        data-price="20.00"
-                                        data-plan="1 session per week"
-                                        onclick="this.dispatchEvent(new Event('change', { bubbles: true }))">
-                                    Choose 1 session per week
-                                </button>
+                                <label for="month-select-1-session">Select month:</label>
+                                <select id="month-select-1-session" class="month-select" data-price="20.00" data-plan="1 session per week">
+                                    <option value="">Choose a month</option>
+                                    <!-- Will be populated by JavaScript -->
+                                </select>
                             </div>
                         </div>
                         
@@ -128,16 +117,14 @@
         <div class="container">
             <div class="footer-links">
                 <p>Quick Links:</p>
-                <a href="https://www.battsharlow.com/" target="_blank" rel="noopener noreferrer">Batts Table Tennis Club</a>
-                <a href="https://stripe.com/gb/resources/more/secure-payment-systems-explained" target="_blank" rel="noopener noreferrer">Stripe Secure Payments</a>
+                <a href="https://www.battsharlow.com/" target="_blank">Batts Table Tennis Club</a>
+                <a href="https://stripe.com/gb/resources/more/secure-payment-systems-explained" target="_blank">Stripe Secure Payments</a>
                 <a href="mailto:cbj.uk.design@gmail.com">cbj-uk-design</a>
             </div>
-            <p>&copy; 2026 Carl Johnson Designs. All rights reserved.</p>
+            <p>&copy; 2025 cbj-uk-design. All rights reserved.</p>
         </div>
     </footer>
-
-    <!-- Appwrite Web SDK — must load before member-verification.js -->
-    <script src="https://cdn.jsdelivr.net/npm/appwrite@15.0.0"></script>
-    <script src="js/member-verification.js"></script>
+    <script src="js/secure-api.js"></script>
+    <script src="js/main.js"></script>
 </body>
 </html>

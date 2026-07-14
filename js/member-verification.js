@@ -1,18 +1,27 @@
 /**
  * member-verification.js
  * -----------------------------------------------------------------------
- * Member verification flow for beginner.html
+ * Member verification flow for junior-coaching.html
  *
- * Attach this script to beginner.html (after the Appwrite Web SDK) and it
- * will intercept clicks on the three booking-choice buttons, ask the user
- * for their Member ID, look it up in Appwrite, and — once confirmed —
- * hand control back to the booking flow.
+ * Attach this script to junior-coaching.html (after the Appwrite Web SDK)
+ * and it will intercept clicks on the "Book Now" buttons inside each
+ * .fee-card, ask the user for their Member ID, look it up in Appwrite,
+ * and — once confirmed — send them on to that card's booking page.
  *
  * REQUIRES: Appwrite Web SDK, loaded before this file, e.g.
  *   <script src="https://cdn.jsdelivr.net/npm/appwrite@15.0.0"></script>
- *   <script src="member-verification.js"></script>
+ *   <script src="js/member-verification.js"></script>
  *
  * SETUP: fill in the CONFIG block below with your project's real values.
+ *
+ * HOW BUTTON TARGETING WORKS
+ * -----------------------------------------------------------------------
+ * This file does not hardcode any destination page names. Instead, for
+ * every button matching BUTTON_SELECTOR it reads:
+ *   - the tier name from the nearest ancestor .fee-card's <h3>
+ *   - the destination page from the button's own href attribute
+ * So it automatically supports any number of "Book Now" buttons/cards —
+ * add or rename cards freely and this script adapts without edits.
  * -----------------------------------------------------------------------
  */
 
@@ -30,19 +39,15 @@
     memberIdField: "id_from_bbb",
   };
 
-  // Selectors for the three trigger buttons in beginner.html.
-  // Preferred: add data-booking-choice="..." to each button.
-  // Falls back to matching on visible button text if attributes aren't present.
-  const BUTTON_SELECTORS = [
-    { selector: '[data-booking-choice="2-3-sessions"]', fallbackText: "Choose 2/3 sessions per week", choice: "2-3-sessions" },
-    { selector: '[data-booking-choice="1-session"]', fallbackText: "Choose 1 session per week", choice: "1-session" },
-    { selector: '[data-booking-choice="calendar"]', fallbackText: "Show calendar to book", choice: "calendar" },
-  ];
+  // Selector for the "Book Now" buttons inside each coaching card on
+  // junior-coaching.html. Tier name + destination are derived per-button
+  // at runtime (see header comment above) — nothing to configure here.
+  const BUTTON_SELECTOR = ".fee-card .btn.btn-primary";
 
   const SESSION_STORAGE_KEY = "bbb_member_id";
   const SESSION_STORAGE_NAME_KEY = "bbb_member_name";
   const SESSION_STORAGE_TTE_KEY = "bbb_member_tte";
-  const SESSION_STORAGE_CHOICE_KEY = "bbb_booking_choice";
+  const SESSION_STORAGE_TIER_KEY = "bbb_booking_tier";
 
   let appwriteClient = null;
   let appwriteDatabases = null;
@@ -178,8 +183,9 @@
 
   /**
    * Renders the "enter member ID" step.
+   * @param {{tierName: string, target: string}} booking
    */
-  function renderEntryStep(bookingChoice) {
+  function renderEntryStep(booking) {
     removeModal();
     injectStyles();
 
@@ -190,6 +196,7 @@
         <button class="mv-close" type="button" aria-label="Close">&times;</button>
         <h2 id="mv-title">Member Verification</h2>
         <p class="mv-instructions">
+          Booking: <strong>${escapeHtml(booking.tierName)}</strong><br>
           Please enter your initials and first 3 numbers of your TTE number.
           Example ID: AB321
         </p>
@@ -216,7 +223,7 @@
         return;
       }
       errorText.textContent = "";
-      verifyMember(memberId, bookingChoice);
+      verifyMember(memberId, booking);
     }
 
     submitBtn.addEventListener("click", submit);
@@ -242,13 +249,14 @@
     panel.querySelector(".mv-close").addEventListener("click", removeModal);
   }
 
-  function renderNotFoundStep(bookingChoice) {
+  function renderNotFoundStep(booking) {
     const panel = document.getElementById(MODAL_ID);
     if (!panel) return;
     panel.innerHTML = `
       <button class="mv-close" type="button" aria-label="Close">&times;</button>
       <h2>Member Verification</h2>
       <p class="mv-instructions">
+        Booking: <strong>${escapeHtml(booking.tierName)}</strong><br>
         Please enter your initials and first 3 numbers of your TTE number.
         Example ID: AB321
       </p>
@@ -272,7 +280,7 @@
         return;
       }
       errorText.textContent = "";
-      verifyMember(memberId, bookingChoice);
+      verifyMember(memberId, booking);
     }
 
     document.getElementById("mv-submit-btn").addEventListener("click", submit);
@@ -282,7 +290,7 @@
     document.getElementById("mv-cancel-btn").addEventListener("click", removeModal);
   }
 
-  function renderConfirmationStep(member, bookingChoice) {
+  function renderConfirmationStep(member, booking) {
     const panel = document.getElementById(MODAL_ID);
     if (!panel) return;
 
@@ -292,7 +300,8 @@
       <button class="mv-close" type="button" aria-label="Close">&times;</button>
       <h2>Confirm Your Details</h2>
       <p class="mv-confirmation">
-        You are booking for <strong>${escapeHtml(fullName)}</strong>
+        You are booking <strong>${escapeHtml(booking.tierName)}</strong> for
+        <strong>${escapeHtml(fullName)}</strong>
         (TTE Number: <strong>${escapeHtml(String(member.tte_number))}</strong>).
       </p>
       <div class="mv-buttons">
@@ -306,13 +315,13 @@
       sessionStorage.setItem(SESSION_STORAGE_KEY, member.memberId);
       sessionStorage.setItem(SESSION_STORAGE_NAME_KEY, fullName);
       sessionStorage.setItem(SESSION_STORAGE_TTE_KEY, String(member.tte_number));
-      sessionStorage.setItem(SESSION_STORAGE_CHOICE_KEY, bookingChoice);
+      sessionStorage.setItem(SESSION_STORAGE_TIER_KEY, booking.tierName);
       removeModal();
-      proceedToBookingFlow(bookingChoice, member);
+      proceedToBookingFlow(booking, member);
     });
 
     document.getElementById("mv-goback-btn").addEventListener("click", () => {
-      renderEntryStep(bookingChoice);
+      renderEntryStep(booking);
     });
   }
 
@@ -325,7 +334,7 @@
   // ======================================================================
   // Appwrite lookup
   // ======================================================================
-  async function verifyMember(memberId, bookingChoice) {
+  async function verifyMember(memberId, booking) {
     renderLoadingStep();
 
     const databases = getAppwrite();
@@ -353,7 +362,7 @@
       );
 
       if (result.total === 0 || !result.documents || result.documents.length === 0) {
-        renderNotFoundStep(bookingChoice);
+        renderNotFoundStep(booking);
         return;
       }
 
@@ -365,7 +374,7 @@
           player_last_name: doc.player_last_name,
           tte_number: doc.tte_number,
         },
-        bookingChoice
+        booking
       );
     } catch (err) {
       console.error("[member-verification] Appwrite query failed:", err);
@@ -384,7 +393,7 @@
         panel.querySelector(".mv-close").addEventListener("click", removeModal);
         document
           .getElementById("mv-retry-btn")
-          .addEventListener("click", () => renderEntryStep(bookingChoice));
+          .addEventListener("click", () => renderEntryStep(booking));
       }
     }
   }
@@ -392,13 +401,14 @@
   // ======================================================================
   // Return to booking flow after successful verification
   // ======================================================================
-  function proceedToBookingFlow(bookingChoice, member) {
-    // Fire a custom event so beginner.html (or any listener) can react
-    // without this file needing to know booking-flow internals.
+  function proceedToBookingFlow(booking, member) {
+    // Fire a custom event so any listener on the page can react without
+    // this file needing to know booking-flow internals.
     document.dispatchEvent(
       new CustomEvent("memberVerified", {
         detail: {
-          bookingChoice,
+          tierName: booking.tierName,
+          target: booking.target,
           memberId: member.memberId,
           fullName: `${member.player_first_name} ${member.player_last_name}`,
           tteNumber: member.tte_number,
@@ -406,51 +416,41 @@
       })
     );
 
-    // Default behavior per choice — adjust targets/anchors to match your
-    // actual booking flow markup/pages.
-    switch (bookingChoice) {
-      case "2-3-sessions":
-        document.getElementById("booking-2-3-sessions-panel")?.scrollIntoView({ behavior: "smooth" });
-        break;
-      case "1-session":
-        document.getElementById("booking-1-session-panel")?.scrollIntoView({ behavior: "smooth" });
-        break;
-      case "calendar":
-        document.getElementById("booking-calendar-panel")?.scrollIntoView({ behavior: "smooth" });
-        break;
+    // Send the visitor on to the tier-specific booking page the button
+    // originally linked to.
+    if (booking.target) {
+      window.location.href = booking.target;
     }
   }
 
   // ======================================================================
-  // Wire up the three trigger buttons
+  // Wire up every "Book Now" button on the page
   // ======================================================================
-  function findButton(config) {
-    let btn = document.querySelector(config.selector);
-    if (btn) return btn;
-
-    // Fallback: match by visible text content
-    const candidates = document.querySelectorAll("button, a");
-    for (const el of candidates) {
-      if (el.textContent.trim() === config.fallbackText) {
-        return el;
-      }
-    }
-    return null;
+  function getTierName(button) {
+    const card = button.closest(".fee-card");
+    const heading = card ? card.querySelector("h3") : null;
+    return heading ? heading.textContent.trim() : "Booking";
   }
 
   function init() {
-    BUTTON_SELECTORS.forEach((config) => {
-      const btn = findButton(config);
-      if (!btn) {
-        console.warn(
-          `[member-verification] Could not find button for "${config.fallbackText}". ` +
-          `Add data-booking-choice="${config.choice}" to that button in beginner.html.`
-        );
-        return;
-      }
+    const buttons = document.querySelectorAll(BUTTON_SELECTOR);
+
+    if (buttons.length === 0) {
+      console.warn(
+        `[member-verification] No buttons found matching "${BUTTON_SELECTOR}".`
+      );
+      return;
+    }
+
+    buttons.forEach((btn) => {
+      const booking = {
+        tierName: getTierName(btn),
+        target: btn.getAttribute("href"),
+      };
+
       btn.addEventListener("click", (e) => {
         e.preventDefault();
-        renderEntryStep(config.choice);
+        renderEntryStep(booking);
       });
     });
   }
@@ -469,7 +469,7 @@
       memberId: sessionStorage.getItem(SESSION_STORAGE_KEY),
       fullName: sessionStorage.getItem(SESSION_STORAGE_NAME_KEY),
       tteNumber: sessionStorage.getItem(SESSION_STORAGE_TTE_KEY),
-      bookingChoice: sessionStorage.getItem(SESSION_STORAGE_CHOICE_KEY),
+      tierName: sessionStorage.getItem(SESSION_STORAGE_TIER_KEY),
     }),
   };
 })();
