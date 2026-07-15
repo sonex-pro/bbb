@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Details | Batt's Booking Buddy</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- Apple Touch Icon (iOS home screen) -->
+    <link rel="apple-touch-icon" href="images/webclip.png">
+    <!-- Web App Manifest -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Batt's Booking">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html#home">
+                    <img src="images/logo.webp" alt="Batt's Booking Buddy Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="index.html#about" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    <main>
+        <section class="lesson-detail">
+            <div class="container">
+                <h1>Your Details</h1>
+                <div class="booking-form-container">
+                    <form id="details-form" class="booking-form" novalidate>
+                        <div class="form-group">
+                            <label for="group-selected">Group Selected</label>
+                            <input type="text" id="group-selected" name="group-selected" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="your-name">Card Holders Name</label>
+                            <input type="text" id="your-name" name="your-name" placeholder="Enter card holders name">
+                            <div class="error-message" id="your-name-error" style="display: none; color: #ff0000; font-size: 0.8rem; margin-top: 0.25rem;">Please enter card holders name</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="player-name">Player's Name</label>
+                            <input type="text" id="player-name" name="player-name" placeholder="Enter player's name">
+                            <div class="error-message" id="player-name-error" style="display: none; color: #ff0000; font-size: 0.8rem; margin-top: 0.25rem;">Please enter player's name</div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary next-button">Next</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 cbj-uk-design. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const detailsForm = document.getElementById('details-form');
+            const groupSelectedInput = document.getElementById('group-selected');
+            const yourNameInput = document.getElementById('your-name');
+            const playerNameInput = document.getElementById('player-name');
+            const yourNameError = document.getElementById('your-name-error');
+            const playerNameError = document.getElementById('player-name-error');
+            
+            // Display the selected group from localStorage
+            const bookingData = JSON.parse(localStorage.getItem('bookingData'));
+            if (bookingData && bookingData.skillLevel) {
+                groupSelectedInput.value = bookingData.skillLevel;
+            } else {
+                groupSelectedInput.value = 'Not selected';
+            }
+            
+            if (detailsForm) {
+                detailsForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Reset error messages
+                    yourNameError.style.display = 'none';
+                    playerNameError.style.display = 'none';
+                    
+                    const yourName = yourNameInput.value.trim();
+                    const playerName = playerNameInput.value.trim();
+                    
+                    let isValid = true;
+                    
+                    // Validate your name
+                    if (!yourName) {
+                        yourNameError.style.display = 'block';
+                        isValid = false;
+                    }
+                    
+                    // Validate player name
+                    if (!playerName) {
+                        playerNameError.style.display = 'block';
+                        isValid = false;
+                    }
+                    
+                    if (isValid) {
+                        // Save user details to localStorage
+                        saveUserDetails(yourName, playerName);
+                        
+                        // Redirect to booking summary page
+                        window.location.href = 'booking-summary.html';
+                    }
+                });
+                
+                // Clear error messages when user starts typing
+                yourNameInput.addEventListener('input', function() {
+                    yourNameError.style.display = 'none';
+                });
+                
+                playerNameInput.addEventListener('input', function() {
+                    playerNameError.style.display = 'none';
+                });
+            }
+        });
+    </script>
+</body>
+</html>

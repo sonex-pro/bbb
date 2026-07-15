@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Summary | Batt's Booking Buddy</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobile-overrides.css">
+    <link rel="stylesheet" href="css/button-fix.css">
+    <link rel="stylesheet" href="css/btn-checkout.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- Apple Touch Icon (iOS home screen) -->
+    <link rel="apple-touch-icon" href="images/webclip.png">
+    <!-- Web App Manifest -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Batt's Booking">
+    <meta name="theme-color" content="#0e43ca">
+    <link rel="manifest" href="manifest.json">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Secure API for server-side price verification -->
+    <script src="js/secure-api.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html#home">
+                    <img src="images/logo.webp" alt="Batt's Booking Buddy Logo" class="logo-img">
+                </a>
+            </div>
+            <nav class="nav">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html#home" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a href="index.html#about" class="nav-link">About</a></li>
+                    <li class="nav-item"><a href="index.html#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+    <main>
+        <section class="lesson-detail">
+            <div class="container">
+                <h1>Booking Summary</h1>
+                <div class="booking-form-container">
+                    <div class="booking-summary">
+                        <h3>Your Booking</h3>
+                        <div id="booking-details">
+                            <h4>Booking Details</h4>
+                            <p id="group-selected-display">Group Selected: Loading...</p>
+                            <p id="booking-type">Booking Type: Loading...</p>
+                        </div>
+                        
+                        <div id="personal-details">
+                            <h4>Personal Details</h4>
+                            <!-- Updated to show Card Holder's name -->
+                            <p id="your-name-display">Card Holders Name: Loading...</p>
+                            <p id="player-name-display">Player's Name: Loading...</p>
+                        </div>
+                        
+                        <div id="discount-section">
+                            <h4>Discount Code</h4>
+                            <div class="form-group">
+    <input type="text" id="discount-code" placeholder="Sibling discount code only">
+</div>
+<div class="discount-actions">
+    <button id="apply-discount" class="btn btn-primary">Apply Sibling Code</button>
+    <button id="back-home-btn" class="btn btn-primary">Back Home</button>
+</div>
+                            </div>
+                            <p id="original-price">Original Price: £<span id="original-price-value">0.00</span></p>
+<p id="discount-amount" style="display: none;">Discount: £<span id="discount-amount-value">0.00</span></p>
+<p id="total-price"><strong>Total: £<span id="total-price-value">0.00</span></strong></p>
+<button id="checkout-btn" class="btn btn-primary btn-checkout">Pay with Stripe</button>
+</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 cbj-uk-design. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Clear any existing data when first loading the page
+            // This ensures we don't show stale data from previous sessions
+            if (!sessionStorage.getItem('summaryPageVisited')) {
+                localStorage.removeItem('discountCode');
+                localStorage.removeItem('discountAmount');
+                localStorage.removeItem('totalPrice');
+                sessionStorage.setItem('summaryPageVisited', 'true');
+            }
+            
+            // Display booking summary
+            displayBookingSummary();
+            
+            // Add event listeners to navigation links to clear localStorage data
+            const homeLinks = document.querySelectorAll('a[href^="index.html"]');
+            homeLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Clear all booking data from localStorage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                });
+            });
+            
+            // Also add event listener to the logo link
+            const logoLink = document.querySelector('.logo a');
+            if (logoLink) {
+                logoLink.addEventListener('click', function(e) {
+                    // Clear all booking data from localStorage
+                    localStorage.clear();
+                    sessionStorage.clear();
+                });
+            }
+            
+            // Handle discount code application
+            const applyDiscountBtn = document.getElementById('apply-discount');
+            const discountCodeInput = document.getElementById('discount-code');
+            const originalPriceValue = document.getElementById('original-price-value');
+            const discountAmountElement = document.getElementById('discount-amount');
+            const discountAmountValue = document.getElementById('discount-amount-value');
+            const totalPriceValue = document.getElementById('total-price-value');
+            
+            applyDiscountBtn.addEventListener('click', async function() {
+                // Disable button during processing
+                applyDiscountBtn.disabled = true;
+                applyDiscountBtn.textContent = 'Processing...';
+                
+                try {
+                    const discountCode = discountCodeInput.value.trim().toUpperCase();
+                    const bookingData = JSON.parse(localStorage.getItem('bookingData'));
+                    
+                    if (!bookingData) {
+                        alert('Error: Missing booking data');
+                        return;
+                    }
+                    
+                    // Get secure pricing from the server
+                    const priceInfo = await getSecurePricing(
+                        bookingData.skillLevel,
+                        bookingData.plan,
+                        discountCode
+                    );
+                    
+                    // Update display with server-verified pricing
+                    originalPriceValue.textContent = priceInfo.originalPrice;
+                    
+                    const discountAmount = parseFloat(priceInfo.discountAmount);
+                    if (discountAmount > 0) {
+                        // Display discount amount
+                        discountAmountElement.style.display = 'block';
+                        discountAmountValue.textContent = priceInfo.discountAmount;
+                        totalPriceValue.textContent = priceInfo.finalPrice;
+                        
+                        // Save discount to localStorage
+                        if (discountCode) {
+                            localStorage.setItem('discountCode', discountCode);
+                        } else {
+                            localStorage.removeItem('discountCode');
+                        }
+                    } else {
+                        // No discount applied
+                        discountAmountElement.style.display = 'none';
+                        totalPriceValue.textContent = priceInfo.originalPrice;
+                        
+                        // Remove discount from localStorage
+                        localStorage.removeItem('discountCode');
+                    }
+                } catch (error) {
+                    console.error('Error applying discount:', error);
+                    alert('Error applying discount: ' + error.message);
+                    
+                    // Fallback to original behavior if server verification fails
+                    const discountCode = discountCodeInput.value.trim().toUpperCase();
+                    const originalPrice = parseFloat(originalPriceValue.textContent);
+                    
+                    if (discountCode === 'SIB') {
+                        const discountAmount = originalPrice * 0.5;
+                        const discountedPrice = originalPrice - discountAmount;
+                        
+                        discountAmountElement.style.display = 'block';
+                        discountAmountValue.textContent = discountAmount.toFixed(2);
+                        totalPriceValue.textContent = discountedPrice.toFixed(2);
+                        
+                        localStorage.setItem('discountCode', discountCode);
+                    } else {
+                        discountAmountElement.style.display = 'none';
+                        totalPriceValue.textContent = originalPrice.toFixed(2);
+                        localStorage.removeItem('discountCode');
+                    }
+                } finally {
+                    // Re-enable button
+                    applyDiscountBtn.disabled = false;
+                    applyDiscountBtn.textContent = 'Apply Sibling Code';
+                }
+            });
+            
+            // Handle back to home button
+            const backHomeBtn = document.getElementById('back-home-btn');
+            backHomeBtn.addEventListener('click', function() {
+                // Clear all booking data from localStorage
+                localStorage.clear(); // Clear everything to ensure no data remains
+                sessionStorage.clear(); // Also clear session storage
+                
+                // Navigate back to home page
+                window.location.href = 'index.html';
+            });
+            
+            // Initialize Stripe with your live public key
+            const stripe = Stripe('pk_live_51RSwe5LZ4uNsSn9KnAuAAyZOtdpFM9cFIHuBjj4gDzQlBmlqA7nCjGV8titpBwzTqKADiMXKX6ISMNfqW5B1TciO00kU3OpRtM');
+            
+            // Handle checkout button - Stripe payment integration
+            const checkoutBtn = document.getElementById('checkout-btn');
+            checkoutBtn.addEventListener('click', async function() {
+                // Disable the button to prevent multiple clicks
+                checkoutBtn.disabled = true;
+                checkoutBtn.textContent = 'Processing...';
+                
+                try {
+                    // Get booking data
+                    const bookingData = JSON.parse(localStorage.getItem('bookingData'));
+                    const userDetails = JSON.parse(localStorage.getItem('userDetails'));
+                    const discountCode = localStorage.getItem('discountCode') || '';
+                    
+                    if (!bookingData || !userDetails) {
+                        throw new Error('Missing booking or user details');
+                    }
+                    
+                    // Create a secure booking using our secure API that validates prices server-side
+                    // This prevents any price manipulation in localStorage
+                    const combinedData = {
+                        ...bookingData,
+                        ...userDetails,
+                        discountCode: discountCode
+                    };
+                    
+                    console.log('Creating secure booking with server-side price validation');
+                    
+                    // Call our secure booking function that handles price verification
+                    // and creates a Stripe session
+                    const session = await createSecureBooking(combinedData);
+                    console.log('Secure session created:', session);
+                    
+                    // Redirect to Stripe Checkout
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: session.id
+                    });
+                    
+                    if (result.error) {
+                        throw new Error(result.error.message);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Payment failed: ' + error.message);
+                    // Re-enable the button
+                    checkoutBtn.disabled = false;
+                    checkoutBtn.textContent = 'Pay with Stripe';
+                }
+            });
+            
+            // Check if this is a return from successful payment
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentSuccess = urlParams.get('payment_success');
+            
+            if (paymentSuccess === 'true') {
+                // Display success message
+                const bookingFormContainer = document.querySelector('.booking-form-container');
+                if (bookingFormContainer) {
+                    bookingFormContainer.innerHTML = `
+                        <div class="payment-success">
+                            <h3>Payment Successful!</h3>
+                            <p>Your booking has been confirmed. Thank you for choosing Batt's Booking Buddy.</p>
+                            <p>We look forward to seeing you at batts</p>
+                            <button id="return-home" class="btn btn-primary">Return to Home</button>
+                        </div>
+                    `;
+                    
+                    // Add event listener to return home button
+                    const returnHomeBtn = document.getElementById('return-home');
+                    if (returnHomeBtn) {
+                        returnHomeBtn.addEventListener('click', function() {
+                            localStorage.clear();
+                            sessionStorage.clear();
+                            window.location.href = 'index.html';
+                        });
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
