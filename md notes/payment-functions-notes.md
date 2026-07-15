@@ -36,3 +36,9 @@ Email notification: have the webhook function also fire an email (Appwrite has a
 coach on each successful booking, so they don't have to go look anything up.
 
 Which of those fits how the coach actually wants to check bookings — logging into something, or getting notified?
+
+Two things worth knowing before the code: getSecurePricing() can be a plain client-side
+Appwrite database read (prices aren't secret). But createSecureBooking() must go through 
+a server-side Appwrite Function, because creating the real Stripe Checkout Session needs 
+your Stripe secret key — that can never live in browser JS. So secure-api.js calls an 
+Appwrite Function; the Function itself talks to Stripe.
