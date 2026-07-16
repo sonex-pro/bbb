@@ -42,3 +42,26 @@ Appwrite database read (prices aren't secret). But createSecureBooking() must go
 a server-side Appwrite Function, because creating the real Stripe Checkout Session needs 
 your Stripe secret key — that can never live in browser JS. So secure-api.js calls an 
 Appwrite Function; the Function itself talks to Stripe.
+To get this working, you'll need to set up in Appwrite:
+
+A prices collection in your database, with one document per skill-level + plan combination. Based on what beginner.html and the old fallback table use, you need rows like:
+columns: skillLevel, plan, price
+values: 1-Under 11, 3 sessions per week, 45
+values: 1-Under 11, 1 session per week, 30
+values: 1-Under 11, Single sessions, 8
+values: 2-Open (confirm this string matches getSkillLevel FromPage()), 3 sessions per week, 52
+...and so on for Squad
+Give this collection read permission for "Any" — same public-read pattern as your member_verification collection.
+Deploy the Appwrite Function (create-checkout-session) with:
+
+Runtime: Node.js 18 or 20
+Entrypoint: src/main.js
+Environment variables: STRIPE_SECRET_KEY, SITE_URL, PRICES_DATABASE_ID, PRICES_COLLECTION_ID
+Execute access: "Any" (bookers aren't logged-in Appwrite users)
+
+
+In secure-api.js, fill in the two TODOs in CONFIG: your real pricesCollectionId and the Function's ID (checkoutFunctionId) — get that ID from the Appwrite Console after creating the Function.
+Add <script src="js/secure-api.js"></script> back into booking-summary.html (after the Stripe.js and Appwrite SDK includes), and to any other page that calls getSecurePricing.
+
+One flag: createExecution()'s exact signature has changed across Appwrite SDK versions — worth testing this end-to-end once deployed, since a version mismatch there is the most likely thing to need a small tweak.
+Once this is live and taking real payments, that's the point to circle back to the Stripe webhook → coach's booking record piece we discussed earlier — want to build that next, or test this checkout flow first?
