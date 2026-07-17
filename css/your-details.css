@@ -1,0 +1,311 @@
+/* Your Details Page Styles */
+
+/* Variables */
+:root {
+    --brand-blue: #0e43ca;
+    --brand-dark: #181818;
+    --primary: #2196F3;
+    --shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Reset & Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    color: #212121;
+    background-color: #ffffff;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+
+/* Header */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #fff;
+    box-shadow: var(--shadow);
+    z-index: 1000;
+    padding: 0.75rem 0;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 1.5rem;
+}
+
+.logo {
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    height: 65px;
+    width: auto;
+    display: block;
+}
+
+/* Navigation */
+.nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 2rem;
+}
+
+.nav-link {
+    color: #212121;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 0.5rem 0;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary);
+}
+
+/* Mobile menu toggle */
+.menu-toggle {
+    display: none;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1002;
+}
+
+.menu-toggle span {
+    display: block;
+    width: 25px;
+    height: 3px;
+    margin: 5px 0;
+    background-color: #212121;
+    transition: all 0.3s ease;
+}
+
+/* Mobile styles */
+@media (max-width: 992px) {
+    .menu-toggle {
+        display: block;
+        position: absolute;
+        right: 1.5rem;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .nav {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 80%;
+        max-width: 300px;
+        height: 100vh;
+        background-color: #fff;
+        box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 5rem 2rem 2rem;
+    }
+    
+    .nav.active {
+        right: 0;
+    }
+    
+    .nav-list {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    
+    .menu-toggle.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    
+    .menu-toggle.active span:nth-child(2) {
+        opacity: 0;
+    }
+    
+    .menu-toggle.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+    }
+}
+
+/* Main Content */
+.lesson-detail {
+    padding-top: 100px;
+    padding-bottom: 4rem;
+    background-color: #fff;
+}
+
+.lesson-detail h1 {
+    color: var(--brand-blue);
+    margin-bottom: 1.5rem;
+    padding-top: 10px;
+    font-size: 2.5rem;
+}
+
+/* Form Container */
+.booking-form-container {
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.booking-form {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow);
+}
+
+/* Form Groups */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #212121;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.form-group input[readonly] {
+    background-color: #f5f5f5;
+    color: #666;
+}
+
+/* Error Messages */
+.error-message {
+    color: #ff0000;
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+/* Form Actions */
+.form-actions {
+    margin-top: 2rem;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 8px 2rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-align: center;
+    text-decoration: none;
+    background-color: var(--brand-dark);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.2;
+    box-sizing: border-box;
+}
+
+.btn-primary {
+    background-color: var(--brand-dark);
+    color: #fff;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+    background-color: #222;
+}
+
+.next-button {
+    padding: 3px 2rem;
+    font-size: 1rem;
+    font-weight: 500;
+    background-color: #181818;
+    color: #fff;
+}
+
+.next-button:hover {
+    background-color: #222;
+}
+
+/* Footer */
+.footer {
+    background-color: #181818;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 768px) {
+    .footer {
+        padding: 3rem 0;
+    }
+}
+
+.footer p {
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0;
+    }
+    
+    .logo-img {
+        height: 55px;
+        width: auto;
+    }
+    
+    .lesson-detail h1 {
+        font-size: 2rem;
+    }
+    
+    .booking-form {
+        padding: 1.5rem;
+    }
+}
